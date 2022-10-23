@@ -54,10 +54,10 @@ function Sleep(milliseconds) {
 //----------------------------------------------------------------------------------------------------------
 // create client
 require('dotenv').config();
-const {Client, MessageEmbed, Intents, MessageActionRow, MessageButton} = require('discord.js');
+const {Client, EmbedBuilder, ActionRowBuilder, ButtonBuilder, GatewayIntentBits, Partials} = require('discord.js');
 const client = new Client({
 	messageEditHistoryMaxSize: 0,
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 });
 
 //----------------------------------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ async function createStatusMessage(statusChannel) {
 	await clearOldMessages(statusChannel, 0);
 	
 	// create new message
-	let embed = new MessageEmbed();
+	let embed = new EmbedBuilder();
 	embed.setTitle("instance starting...");
 	embed.setColor('#ffff00');
 	
@@ -183,12 +183,12 @@ async function startStatusMessage(statusMessage) {
 	while(true){
 		try {
 			// steam link button
-			let row = new MessageActionRow()
-			row.addComponents(
-				new MessageButton()
+			let row = new ActionRowBuilder()
+			.addComponents(
+				new ButtonBuilder()
 					.setCustomId('steamLink')
 					.setLabel('Connect')
-					.setStyle('PRIMARY')
+					.setStyle('Primary')
 			);
 		
 			let embed = await generateStatusEmbed();
@@ -206,7 +206,6 @@ async function startStatusMessage(statusMessage) {
 
 client.on('interactionCreate', interaction => {
 	if (!interaction.isButton()) return;
-	
 	interaction.reply({ content: 'steam://connect/' + config["server_host"] + ':' + config["server_port"], ephemeral: true });
 });
 
@@ -219,7 +218,7 @@ client.on('interactionCreate', interaction => {
 const gamedig = require('gamedig');
 var tic = false;
 function generateStatusEmbed() {
-	let embed = new MessageEmbed();
+	let embed = new EmbedBuilder();
 
 	// set embed name and logo
 	embed.setAuthor({
